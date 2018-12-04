@@ -2,6 +2,7 @@
 // Created by Marc Grau on 02/12/2018.
 //
 
+#include <iostream>
 #include "GrafEtiquetatVMap.h"
 
 GrafEtiquetatVMap::GrafEtiquetatVMap(int nVertexs, bool dirigit) {
@@ -15,9 +16,11 @@ GrafEtiquetatVMap::GrafEtiquetatVMap(const char *nomFitxerTGF, bool dirigit) {
     int v1, v2;
     float e;
 
+    _dirigit = dirigit;
     f_ent.open(nomFitxerTGF, std::ifstream::in);
     if (!f_ent.is_open())
     {
+        std::cout << "ARRIBA" << std::endl;
         throw ("No s'ha obert el fitxer!");
     }
     f_ent >> n;
@@ -73,6 +76,57 @@ bool GrafEtiquetatVMap::esValid(int v) const {
 
 std::list<int> GrafEtiquetatVMap::Hamiltonian_Cycle_NNA() {
     std::list<int> resultat;
+    bool fi = false, trobat = false;
+    int v, adj, pesMax = 99999, vertexMin = 1, i = 1;
+    std::vector<int> marcats;
+    for (int i = 1; i <= _nVertexs; i++)
+    {
+        marcats.push_back(0);
+    }
 
+    while (i <= _nVertexs && !trobat)
+    {
+        v = 1;
+        marcats[i] = 1;
+        resultat.push_back(i);
+        while (!fi && !trobat)
+        {
+            if (vertexMin == 0 || totsM(marcats) == _nVertexs)
+            {
+                fi = true;
+            }
+            vertexMin = 0;
+            for (auto &adjacent : _arestes[v])
+            {
+                if (adjacent.second <= pesMax && marcats[adjacent.first] == 0)
+                {
+                    vertexMin == adjacent.first;
+                    pesMax = adjacent.second;
+                }
+                else if (adjacent.second == i && totsM(marcats) == _nVertexs)
+                {
+                    trobat = true;
+                }
+            }
+            marcats[v] = 1;
+            resultat.push_back(v);
+            v = vertexMin;
+            pesMax = 99999;
+        }
+        resultat.clear();
+        i++;
+    }
     return resultat;
+}
+
+int GrafEtiquetatVMap::totsM(std::vector<int> m) {
+    int marcats = 0;
+    for (auto &marcat : m)
+    {
+        if (marcat == 1)
+        {
+            marcats++;
+        }
+    }
+    return marcats;
 }

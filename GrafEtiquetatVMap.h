@@ -9,6 +9,7 @@
 #include <map>
 #include <fstream>
 #include <list>
+#include <vector>
 
 typedef float etiqueta;
 //typedef string etiqueta;
@@ -26,6 +27,7 @@ public:
     etiqueta EtiquetaAresta(int v1, int v2);
     void escriureGraf(const char * nomFitxerTGF) const;
     std::list<int> Hamiltonian_Cycle_NNA();
+    int totsM (std::vector<int> m);
 
 private:
     int _nVertexs; // =_arestes.size()-1 (vèrtexs comencen a 1)
